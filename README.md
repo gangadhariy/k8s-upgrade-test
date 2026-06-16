@@ -141,54 +141,64 @@ Hello the server is running fine
 
 # 🧩 STEP 1: REPO SETUP (ALL NODES)
 
-Run on ALL nodes:
-
+##Run on ALL nodes:
+```
 sudo rm -f /etc/apt/sources.list.d/kubernetes.list
 sudo mkdir -p /etc/apt/keyrings
-
+```
+```
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-
+```
+```
 echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
-
+```
+```
 sudo apt-get update
-
+```
+```
 apt-cache madison kubeadm
-
----
+```
 
 # 🟦 CONTROL PLANE UPGRADE
-
+```
 sudo apt-get install -y kubeadm=1.31.1-1.1
-
+```
+```
 sudo kubeadm upgrade plan
-
+```
+```
 sudo kubeadm upgrade apply v1.31.1
-
+```
+```
 sudo apt-get install -y kubelet=1.31.1-1.1 kubectl=1.31.1-1.1
-
+```
+```
 sudo systemctl restart kubelet
-
+```
+```
 kubectl uncordon <control-plane-node>
-
----
+```
 
 # 🟩 WORKER NODE UPGRADE (ONE BY ONE)
-
+```
 kubectl drain <worker-node> --ignore-daemonsets --delete-emptydir-data
-
+```
+```
 ssh ubuntu@<worker-node>
-
+```
+```
 sudo apt-get install -y kubeadm=1.31.1-1.1 kubelet=1.31.1-1.1
-
+```
+```
 sudo kubeadm upgrade node
-
+```
+```
 sudo systemctl restart kubelet
-
+```
 exit
-
+```
 kubectl uncordon <worker-node>
-
----
+```
 
 # ⚠️ DRAIN NOTE
 
